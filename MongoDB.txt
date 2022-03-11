@@ -1,0 +1,127 @@
+shows dbs; //to show all databases
+use db     //to create or use db
+db         //to check whuch db is currently use
+db.dropDatabase()    //delete db
+
+
+
+show collections     //show all collection
+db.createCollection('collectionName')    //create collection
+db.collectionName.drop()           //to delete
+
+
+db.collectionName.insert({'name':'aa','roll':01,'age':55})  //sigle row
+db.collectionName.insert([{'name':'aa','roll':01,'age':55},{'name':'aa','roll':01,'age':55},{'name':'aa','roll':01,'age':55}])
+BulkWriteResult({
+        "writeErrors" : [ ],
+        "writeConcernErrors" : [ ],
+        "nInserted" : 2,
+        "nUpserted" : 0,
+        "nMatched" : 0,
+        "nModified" : 0,
+        "nRemoved" : 0,
+        "upserted" : [ ]
+})
+
+db.Emp.find()   //show all rows
+{ "_id" : ObjectId("622a0d9cc4efbe9cfd594fdd"), "name" : "anta", "roll" : 1 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fde"), "name" : "bnmj", "roll" : 2 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fdf"), "name" : "uiop", "roll" : 3 }
+
+db.Emp.find().pretty()
+{
+        "_id" : ObjectId("622a0d9cc4efbe9cfd594fdd"),
+        "name" : "anta",
+        "roll" : 1
+}
+{
+        "_id" : ObjectId("622a0e76c4efbe9cfd594fde"),
+        "name" : "bnmj",
+        "roll" : 2
+}
+{
+        "_id" : ObjectId("622a0e76c4efbe9cfd594fdf"),
+        "name" : "uiop",
+        "roll" : 3
+}
+
+db.Emp.find({'name':'aabb'})  //find by name 
+{ "_id" : ObjectId("622a1321c4efbe9cfd594fe3"), "name" : "aabb", "roll" : 1, "age" : 55 }
+
+> db.Emp.find().limit(2)  //
+{ "_id" : ObjectId("622a0d9cc4efbe9cfd594fdd"), "name" : "anta", "roll" : 1 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fde"), "name" : "bnmj", "roll" : 2 }
+
+
+db.Emp.find().count()
+4
+
+//Sorting
+
+db.Emp.find().sort({roll:1})
+{ "_id" : ObjectId("622a0d9cc4efbe9cfd594fdd"), "name" : "anta", "roll" : 1 }
+{ "_id" : ObjectId("622a1321c4efbe9cfd594fe3"), "name" : "aabb", "roll" : 1, "age" : 55 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fde"), "name" : "bnmj", "roll" : 2 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fdf"), "name" : "uiop", "roll" : 3 }
+> db.Emp.find().sort({roll:-1})
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fdf"), "name" : "uiop", "roll" : 3 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fde"), "name" : "bnmj", "roll" : 2 }
+{ "_id" : ObjectId("622a0d9cc4efbe9cfd594fdd"), "name" : "anta", "roll" : 1 }
+{ "_id" : ObjectId("622a1321c4efbe9cfd594fe3"), "name" : "aabb", "roll" : 1, "age" : 55 }
+
+
+//find
+
+db.Emp.find({'roll':1})
+{ "_id" : ObjectId("622a0d9cc4efbe9cfd594fdd"), "name" : "anta", "roll" : 1 }
+{ "_id" : ObjectId("622a1321c4efbe9cfd594fe3"), "name" : "aabb", "roll" : 1, "age" : 55 }
+
+> db.Emp.findOne({'roll':1})
+{
+        "_id" : ObjectId("622a0d9cc4efbe9cfd594fdd"),
+        "name" : "anta",
+        "roll" : 1
+}
+
+//Update
+
+> db.Emp.update({"_id" : "ObjectId('622a1321c4efbe9cfd594fe3')"},{'name':'ghjk','roll':04,'age':55})
+WriteResult({ "nMatched" : 0, "nUpserted" : 0, "nModified" : 0 })
+> db.Emp.update({"_id" : ObjectId('622a1321c4efbe9cfd594fe3')},{'name':'ghjk','roll':04,'age':55})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+> db.Emp.find().sort({roll:1})
+{ "_id" : ObjectId("622a0d9cc4efbe9cfd594fdd"), "name" : "anta", "roll" : 1 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fde"), "name" : "bnmj", "roll" : 2 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fdf"), "name" : "uiop", "roll" : 3 }
+{ "_id" : ObjectId("622a1321c4efbe9cfd594fe3"), "name" : "ghjk", "roll" : 4, "age" : 55 }
+
+
+//Upsert (when there was no matched field then it create new one)
+> db.Emp.update({'name':'bbbb'},{'name':'bbbb','roll':05,'age':55},{upsert:true})
+WriteResult({
+        "nMatched" : 0,
+        "nUpserted" : 1,
+        "nModified" : 0,
+        "_id" : ObjectId("622a2a585d779a760690cd29")
+})
+> db.Emp.find().sort({roll:1})
+{ "_id" : ObjectId("622a0d9cc4efbe9cfd594fdd"), "name" : "anta", "roll" : 1 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fde"), "name" : "bnmj", "roll" : 2 }
+{ "_id" : ObjectId("622a0e76c4efbe9cfd594fdf"), "name" : "uiop", "roll" : 3 }
+{ "_id" : ObjectId("622a1321c4efbe9cfd594fe3"), "name" : "ghjk", "roll" : 4, "age" : 55 }
+{ "_id" : ObjectId("622a2a585d779a760690cd29"), "name" : "bbbb", "roll" : 5, "age" : 55 }
+
+
+//Increment oparator
+
+> db.Emp.update({'name':'bbbb'},{$inc:{age:2}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+
+> db.Emp.findOne({'roll':5})
+{
+        "_id" : ObjectId("622a2a585d779a760690cd29"),
+        "name" : "bbbb",
+        "roll" : 5,
+        "age" : 57
+}
